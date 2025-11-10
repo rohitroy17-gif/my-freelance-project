@@ -15,13 +15,7 @@ const Footer = () => {
                 </div>
 
                 {/* Middle Section - Navigation Links */}
-                <div className="mb-4 md:mb-0 flex gap-4">
-                    <NavLink to="/" className="hover:text-pink-400">Home</NavLink>
-                    <NavLink to="/all-jobs" className="hover:text-pink-400">All Jobs</NavLink>
-                    <NavLink to="/add-job" className="hover:text-pink-400">Add a Job</NavLink>
-                    <NavLink to="/my-tasks" className="hover:text-pink-400">My Tasks</NavLink>
-                    <NavLink to="/login" className="hover:text-pink-400">Login/Register</NavLink>
-                </div>
+                
 
                 {/* Right Section - Social Icons */}
                 <div className="flex gap-4">
