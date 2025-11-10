@@ -4,7 +4,7 @@ import { NavLink } from 'react-router';
 
 const Banner = () => {
     return (
-        <section className="relative bg-gradient-to-r from-purple-500 to-indigo-600 text-white h-[400px] flex items-center justify-center overflow-hidden ">
+        <section className="relative bg-gradient-to-r from-purple-500 to-indigo-600 text-white h-[400px] flex items-center justify-center overflow-hidden md:mt-1 mt-50">
             
             {/* Animated Background Circles */}
             <motion.div
