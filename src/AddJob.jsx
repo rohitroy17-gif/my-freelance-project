@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import toast from 'react-hot-toast';
-import { Toaster } from 'react-hot-toast';
 import { useNavigate } from 'react-router';
+import { ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const AddJob = () => {
   const navigate = useNavigate();
@@ -50,23 +51,28 @@ const AddJob = () => {
       });
 
       if (res.ok) {
-        toast.success("Job added successfully!");
+        toast.success("Job Added Successfully!");
         setFormData({ title: '', category: '', summary: '', coverImage: '' });
-        navigate("/allJobs"); // Redirect to all jobs page
+        setTimeout(() => navigate("/allJobs"), 1500);  // Redirect after 1.5 sec
       } else {
         toast.error("Failed to add job.");
       }
     } catch (err) {
-      toast.error("An error occurred.");
+      toast.error("Something went wrong!");
       console.error(err);
     }
   };
 
   return (
     <div className="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow">
-      <Toaster position="top-right" />
+
+      {/* Toast Container */}
+      <ToastContainer position="top-right" autoClose={1500} />
+
       <h1 className="text-2xl font-bold mb-4">Add New Job</h1>
+
       <form onSubmit={handleSubmit} className="space-y-4">
+
         {/* Title */}
         <div>
           <label className="block font-semibold mb-1">Title</label>
@@ -130,6 +136,7 @@ const AddJob = () => {
         >
           Add Job
         </button>
+
       </form>
     </div>
   );
