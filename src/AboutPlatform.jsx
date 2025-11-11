@@ -1,3 +1,5 @@
+import { NavLink } from "react-router";
+
 const AboutPlatform = () => {
   return (
     <section className="bg-purple-50 py-16 px-6">
@@ -9,10 +11,11 @@ const AboutPlatform = () => {
           offer your professional services, our platform ensures smooth collaboration, 
           secure payments, and real-time communication.
         </p>
-
+        <NavLink to="/learn">
         <button className="mt-6 bg-purple-600 hover:bg-purple-700 text-white py-3 px-6 rounded-lg">
           Learn More
         </button>
+        </NavLink>
       </div>
     </section>
   );

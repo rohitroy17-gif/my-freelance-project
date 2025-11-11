@@ -22,6 +22,8 @@ import PrivateRoute from "./PrivateRoute.jsx";
 import { AuthProvider } from "./AuthProvider.jsx";
 import MyProfile from "./MyProfile.jsx";
 import UpdateProfile from "./UpdateProfile.jsx";
+import Reliable from "./Reliable.jsx";
+import Learn from "./Learn.jsx";
 
 const router = createBrowserRouter([
   {
@@ -43,7 +45,9 @@ const router = createBrowserRouter([
       { path: "deleteJob/:id", element: <PrivateRoute><DeleteJob /></PrivateRoute> },
       {path: "my-profile",element: (<PrivateRoute><MyProfile /></PrivateRoute>),},
       {path: "update-profile",element: (<PrivateRoute><UpdateProfile />
-       </PrivateRoute>),}
+       </PrivateRoute>),},
+       {path:"reliable" , element:(<Reliable></Reliable>),},
+       {path:"learn" , element:(<Learn></Learn>),}
     ]
   }
 ]);

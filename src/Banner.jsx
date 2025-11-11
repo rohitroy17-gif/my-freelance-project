@@ -33,7 +33,7 @@ const Banner = () => {
                 </p>
 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                    <NavLink to="/how-reliable">
+                    <NavLink to="/reliable">
                         <button className="bg-white text-purple-600 font-semibold px-6 py-3 rounded-lg hover:bg-gray-100 transition">
                             How Reliable
                         </button>
