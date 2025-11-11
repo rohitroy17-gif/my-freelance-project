@@ -13,7 +13,7 @@ const MyAcceptedTasks = () => {
       if (!user) return;
       try {
         setFetching(true);
-        const res = await fetch(`http://localhost:3000/jobs?acceptedBy=${user.email}`);
+        const res = await fetch(`https://freelance-server-six.vercel.app/jobs?acceptedBy=${user.email}`);
         if (!res.ok) throw new Error("Failed to fetch jobs");
         const data = await res.json();
         setJobs(data);
@@ -39,14 +39,14 @@ const MyAcceptedTasks = () => {
 
       if (action === "cancel") {
         // Clear acceptedBy
-        await fetch(`http://localhost:3000/jobs/${jobId}`, {
+        await fetch(`https://freelance-server-six.vercel.app/jobs/${jobId}`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ acceptedBy: null }),
         });
       } else if (action === "done") {
         // Remove job entirely (optional)
-        await fetch(`http://localhost:3000/jobs/${jobId}`, { method: "DELETE" });
+        await fetch(`https://freelance-server-six.vercel.app/jobs/${jobId}`, { method: "DELETE" });
       }
 
       toast.success(action === "done" ? "Job marked done" : "Job cancelled");

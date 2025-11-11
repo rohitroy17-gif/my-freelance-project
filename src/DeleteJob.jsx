@@ -17,7 +17,7 @@ const DeleteJob = () => {
       }
 
       try {
-        const res = await axios.delete(`http://localhost:3000/jobs/${id}`);
+        const res = await axios.delete(`https://freelance-server-six.vercel.app/jobs/${id}`);
         if (res.status === 200) {
           toast.success("Job deleted successfully!");
           navigate("/my-added-jobs"); // redirect after deletion

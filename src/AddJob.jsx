@@ -40,7 +40,7 @@ const AddJob = () => {
     };
 
     try {
-      const res = await fetch("http://localhost:3000/jobs", {
+      const res = await fetch("https://freelance-server-six.vercel.app/jobs", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(jobData),

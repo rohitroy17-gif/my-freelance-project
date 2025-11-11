@@ -6,7 +6,7 @@ const LatestJobs = () => {
   const [jobs, setJobs] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:3000/jobs")
+    fetch("https://freelance-server-six.vercel.app/jobs")
       .then(res => res.json())
       .then(data => setJobs(data.slice(0, 6))); // Get latest 6
   }, []);
@@ -17,7 +17,7 @@ const LatestJobs = () => {
     if (!confirmDelete) return;
 
     try {
-      const res = await fetch(`http://localhost:3000/jobs/${id}`, {
+      const res = await fetch(`https://freelance-server-six.vercel.app/jobs/${id}`, {
         method: "DELETE"
       });
 

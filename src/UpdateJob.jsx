@@ -32,7 +32,7 @@ const UpdateJob = () => {
 
       try {
         setLoadingJob(true);
-        const res = await fetch(`http://localhost:3000/jobs/${id}`);
+        const res = await fetch(`https://freelance-server-six.vercel.app/jobs/${id}`);
         if (!res.ok) throw new Error("Failed to fetch job");
         const data = await res.json();
         setFormData({
@@ -61,7 +61,7 @@ const UpdateJob = () => {
     if (!user) return toast.error("Login required");
 
     try {
-      const res = await fetch(`http://localhost:3000/jobs/${id}`, {
+      const res = await fetch(`https://freelance-server-six.vercel.app/jobs/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

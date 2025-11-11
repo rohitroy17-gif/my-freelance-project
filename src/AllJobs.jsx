@@ -8,7 +8,7 @@ const AllJobs = () => {
 
   // Fetch Jobs
   useEffect(() => {
-    fetch("http://localhost:3000/jobs")
+    fetch("https://freelance-server-six.vercel.app/jobs")
       .then(res => res.json())
       .then(data => setJobs(data));
   }, []);
@@ -26,7 +26,7 @@ const AllJobs = () => {
     if (!confirmDelete) return;
 
     try {
-      const res = await fetch(`http://localhost:3000/jobs/${id}`, {
+      const res = await fetch(`https://freelance-server-six.vercel.app/jobs/${id}`, {
         method: "DELETE"
       });
 

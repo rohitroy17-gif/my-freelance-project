@@ -21,7 +21,7 @@ const JobDetails = () => {
     const fetchJob = async () => {
       try {
         setJobLoading(true);
-        const res = await fetch(`http://localhost:3000/jobs/${id}`);
+        const res = await fetch(`https://freelance-server-six.vercel.app/jobs/${id}`);
         const data = await res.json();
         setJob(data);
       } catch (err) {
@@ -37,7 +37,7 @@ const JobDetails = () => {
     if (!user) return toast.error("You must be logged in");
 
     try {
-      const res = await fetch(`http://localhost:3000/jobs/accept/${id}`, {
+      const res = await fetch(`https://freelance-server-six.vercel.app/jobs/accept/${id}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userEmail: user.email }),
