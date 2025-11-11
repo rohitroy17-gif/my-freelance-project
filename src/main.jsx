@@ -21,6 +21,7 @@ import NotFound from "./NotFound.jsx";
 import PrivateRoute from "./PrivateRoute.jsx";
 import { AuthProvider } from "./AuthProvider.jsx";
 import MyProfile from "./MyProfile.jsx";
+import UpdateProfile from "./UpdateProfile.jsx";
 
 const router = createBrowserRouter([
   {
@@ -40,7 +41,9 @@ const router = createBrowserRouter([
       { path: "updateJob/:id", element: <PrivateRoute><UpdateJob /></PrivateRoute> },
       { path: "allJobs/:id", element: <PrivateRoute><JobDetails /></PrivateRoute> },
       { path: "deleteJob/:id", element: <PrivateRoute><DeleteJob /></PrivateRoute> },
-      {path: "my-profile",element: (<PrivateRoute><MyProfile /></PrivateRoute>),}
+      {path: "my-profile",element: (<PrivateRoute><MyProfile /></PrivateRoute>),},
+      {path: "update-profile",element: (<PrivateRoute><UpdateProfile />
+       </PrivateRoute>),}
     ]
   }
 ]);
