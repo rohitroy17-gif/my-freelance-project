@@ -37,9 +37,9 @@ const LatestJobs = () => {
     <section className="max-w-7xl mx-auto px-6 py-12">
       <h2 className="text-3xl font-bold mb-6 text-center">Latest Jobs</h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 ">
         {jobs.map((job) => (
-          <div key={job._id} className="bg-white shadow-md p-4 rounded border hover:shadow-lg transition">
+          <div key={job._id} className="bg-white p-6 shadow rounded-lg hover:scale-105 duration-300 text-center">
             <img src={job.coverImage} alt={job.title} className="h-40 w-full object-cover rounded-md" />
 
             <h3 className="text-xl font-semibold mt-3">{job.title}</h3>

@@ -20,6 +20,8 @@ import MyAcceptedTasks from './MyAcceptedTasks.jsx';
 import { QueryClient } from '@tanstack/react-query';
 import { QueryClientProvider } from '@tanstack/react-query';
 import NotFound from './NotFound.jsx';
+import PrivateRoute from './PrivateRoute.jsx';
+import {AuthProvider} from './AuthProvider.jsx';
 
 const router = createBrowserRouter([
   {
@@ -37,11 +39,19 @@ const router = createBrowserRouter([
       },
        {
         path:"/add-job",
-        Component:AddJob
+        element:(
+          <PrivateRoute>
+            <AddJob />
+          </PrivateRoute>
+        )
       },
        {
         path:"/my-tasks",
-        Component:MyAcceptedTasks
+        element:(
+          <PrivateRoute>
+            <MyAcceptedTasks />
+          </PrivateRoute>
+        )
       },
        {
         path:"/login",
@@ -53,11 +63,19 @@ const router = createBrowserRouter([
       },
       {
         path:"/myAddedJobs",
-        Component:MyAddedJobs
+       element:(
+          <PrivateRoute>
+            <MyAddedJobs />
+          </PrivateRoute>
+        )
       },
       {
         path:"/updateJob/:id",
-        Component:UpdateJob
+        element: (
+          <PrivateRoute>
+            <UpdateJob />
+          </PrivateRoute>
+        )
       },
       {
         path:"/allJobs/:id",
@@ -65,7 +83,11 @@ const router = createBrowserRouter([
       },
       {
         path:"/deleteJob/:id",
-        Component: DeleteJob
+        element:(
+          <PrivateRoute>
+            <DeleteJob />
+          </PrivateRoute>
+        )
       }
     
     ]
@@ -78,7 +100,9 @@ const queryClient = new QueryClient();
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
+      <AuthProvider>
      <RouterProvider router={router} />
+     </AuthProvider>
    </QueryClientProvider>
   </React.StrictMode>,
 )
