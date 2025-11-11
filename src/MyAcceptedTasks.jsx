@@ -1,80 +1,82 @@
-import React, { useEffect, useState } from 'react';
-import toast, { Toaster } from 'react-hot-toast';
+import React, { useEffect, useState } from "react";
+import { useAuthContext } from "./AuthProvider";
+import { toast } from "react-hot-toast";
 
 const MyAcceptedTasks = () => {
+  const { user, loading } = useAuthContext();
   const [jobs, setJobs] = useState([]);
-  const userEmail = "user@example.com"; // Replace with logged-in user's email
+  const [fetching, setFetching] = useState(true);
 
+  // Fetch accepted jobs
   useEffect(() => {
-    fetch(`http://localhost:3000/myAcceptedTasks?email=${userEmail}`)
-      .then(res => res.json())
-      .then(data => setJobs(data))
-      .catch(err => console.error(err));
-  }, []);
-
-  // Handle DONE - remove job completely
-  const handleDone = async (jobId) => {
-    try {
-      const res = await fetch(`http://localhost:3000/jobs/${jobId}`, {
-        method: "DELETE"
-      });
-      if (res.ok) {
-        setJobs(prev => prev.filter(job => job._id !== jobId));
-        toast.success("Job marked as done and removed!");
+    const fetchAcceptedJobs = async () => {
+      if (!user) return;
+      try {
+        setFetching(true);
+        const res = await fetch(`http://localhost:3000/jobs?acceptedBy=${user.email}`);
+        if (!res.ok) throw new Error("Failed to fetch jobs");
+        const data = await res.json();
+        setJobs(data);
+      } catch (err) {
+        console.error(err);
+        toast.error("Could not load accepted jobs");
+      } finally {
+        setFetching(false);
       }
-    } catch (err) {
-      toast.error("Failed to mark as done.");
-      console.error(err);
-    }
-  };
+    };
+    fetchAcceptedJobs();
+  }, [user]);
 
-  // Handle CANCEL - remove current user from acceptedUsers
-  const handleCancel = async (jobId) => {
+  if (loading || fetching) return <p className="text-center mt-10">Loading...</p>;
+
+  if (!jobs.length) return <p className="text-center mt-10">No accepted tasks yet.</p>;
+
+  // DONE / CANCEL
+  const handleDoneOrCancel = async (jobId, action) => {
     try {
-      const res = await fetch(`http://localhost:3000/jobs/accept/${jobId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userEmail, action: "remove" }) // indicate removal
-      });
-      if (res.ok) {
-        setJobs(prev => prev.filter(job => job._id !== jobId));
-        toast.success("Job cancelled successfully!");
+      // Optimistic UI
+      setJobs(prev => prev.filter(job => job._id !== jobId));
+
+      if (action === "cancel") {
+        // Clear acceptedBy
+        await fetch(`http://localhost:3000/jobs/${jobId}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ acceptedBy: null }),
+        });
+      } else if (action === "done") {
+        // Remove job entirely (optional)
+        await fetch(`http://localhost:3000/jobs/${jobId}`, { method: "DELETE" });
       }
+
+      toast.success(action === "done" ? "Job marked done" : "Job cancelled");
     } catch (err) {
-      toast.error("Failed to cancel job.");
       console.error(err);
+      toast.error("Failed to update job");
     }
   };
 
   return (
-    <div className="max-w-5xl mx-auto p-6">
-      <Toaster position="top-right" />
+    <div className="max-w-6xl mx-auto mt-10 px-6">
       <h1 className="text-3xl font-bold mb-6">My Accepted Tasks</h1>
 
-      {jobs.length === 0 && <p className="text-gray-600">No accepted tasks yet.</p>}
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {jobs.map(job => (
-          <div key={job._id} className="border p-4 rounded shadow bg-white relative">
-            <img
-              src={job.coverImage}
-              alt={job.title}
-              className="w-full h-40 object-cover mb-3 rounded"
-            />
-            <h2 className="text-xl font-semibold">{job.title}</h2>
-            <p className="text-gray-600">{job.category}</p>
-            <p className="mt-2 text-gray-700">{job.summary.substring(0, 80)}...</p>
-            <p className="mt-1 text-sm text-gray-500">Posted by: {job.postedBy}</p>
+          <div key={job._id} className="bg-white shadow-md p-4 rounded-lg border relative">
+            <h2 className="text-xl font-semibold mb-2">{job.title}</h2>
+            <p className="text-gray-600 mb-1"><strong>Category:</strong> {job.category}</p>
+            <p className="text-gray-600 mb-1"><strong>Posted By:</strong> {job.postedBy}</p>
+            <p className="text-gray-700 mb-3">{job.summary.slice(0, 100)}...</p>
 
-            <div className="flex justify-between mt-4">
+            <div className="flex gap-3">
               <button
-                onClick={() => handleDone(job._id)}
+                onClick={() => handleDoneOrCancel(job._id, "done")}
                 className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
               >
                 ✅ Done
               </button>
               <button
-                onClick={() => handleCancel(job._id)}
+                onClick={() => handleDoneOrCancel(job._id, "cancel")}
                 className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
               >
                 ❌ Cancel
@@ -88,3 +90,4 @@ const MyAcceptedTasks = () => {
 };
 
 export default MyAcceptedTasks;
+
