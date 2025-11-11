@@ -1,19 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router';
-import { useNavigate } from 'react-router';
-import toast from 'react-hot-toast';
-import { Toaster } from 'react-hot-toast';
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router";
+import { useNavigate } from "react-router";
+import { useAuthContext } from "./AuthProvider";
+import toast, { Toaster } from "react-hot-toast";
 
 const UpdateJob = () => {
-  const { id } = useParams(); // Job ID from URL
+  const { id } = useParams();
   const navigate = useNavigate();
-
+  const { user, loading } = useAuthContext();
   const [formData, setFormData] = useState({
-    title: '',
-    category: '',
-    summary: '',
-    coverImage: ''
+    title: "",
+    category: "",
+    summary: "",
+    coverImage: "",
   });
+  const [loadingJob, setLoadingJob] = useState(true);
 
   const categories = [
     "Web Development",
@@ -24,51 +25,68 @@ const UpdateJob = () => {
     "SEO",
   ];
 
-  // Fetch the existing job data
+  // Fetch job details
   useEffect(() => {
-    fetch(`http://localhost:3000/jobs/${id}`)
-      .then(res => res.json())
-      .then(data => {
+    const fetchJob = async () => {
+      if (!user) return;
+
+      try {
+        setLoadingJob(true);
+        const res = await fetch(`http://localhost:3000/jobs/${id}`);
+        if (!res.ok) throw new Error("Failed to fetch job");
+        const data = await res.json();
         setFormData({
-          title: data.title || '',
-          category: data.category || '',
-          summary: data.summary || '',
-          coverImage: data.coverImage || ''
+          title: data.title || "",
+          category: data.category || "",
+          summary: data.summary || "",
+          coverImage: data.coverImage || "",
         });
-      })
-      .catch(err => console.error(err));
-  }, [id]);
+      } catch (err) {
+        console.error(err);
+        toast.error("Failed to load job");
+      } finally {
+        setLoadingJob(false);
+      }
+    };
+
+    fetchJob();
+  }, [id, user]);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleUpdate = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!user) return toast.error("Login required");
+
     try {
       const res = await fetch(`http://localhost:3000/jobs/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(formData),
       });
 
-      if (res.ok) {
-        toast.success("Job updated successfully!");
-        navigate("/allJobs"); // Redirect to All Jobs page
-      } else {
-        toast.error("Failed to update job.");
-      }
+      if (!res.ok) throw new Error("Failed to update job");
+
+      toast.success("Job updated successfully!");
+      navigate("/all-jobs"); // Redirect after update
     } catch (err) {
-      toast.error("An error occurred.");
       console.error(err);
+      toast.error("Failed to update job");
     }
   };
 
+  if (loading || loadingJob) {
+    return <p className="text-center mt-10">Loading...</p>;
+  }
+
   return (
-    <div className="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow">
+    <div className="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow mt-10">
       <Toaster position="top-right" />
-      <h1 className="text-2xl font-bold mb-4">Update Job</h1>
-      <form onSubmit={handleUpdate} className="space-y-4">
+      <h1 className="text-2xl font-bold mb-6">Update Job</h1>
+
+      <form onSubmit={handleSubmit} className="space-y-4">
         {/* Title */}
         <div>
           <label className="block font-semibold mb-1">Title</label>
@@ -93,8 +111,10 @@ const UpdateJob = () => {
             className="w-full border rounded px-3 py-2"
           >
             <option value="">Select a category</option>
-            {categories.map(cat => (
-              <option key={cat} value={cat}>{cat}</option>
+            {categories.map((cat) => (
+              <option key={cat} value={cat}>
+                {cat}
+              </option>
             ))}
           </select>
         </div>
@@ -125,10 +145,9 @@ const UpdateJob = () => {
           />
         </div>
 
-        {/* Submit Button */}
         <button
           type="submit"
-          className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700"
+          className="bg-purple-600 text-white px-6 py-2 rounded hover:bg-purple-700"
         >
           Update Job
         </button>
@@ -138,3 +157,4 @@ const UpdateJob = () => {
 };
 
 export default UpdateJob;
+
