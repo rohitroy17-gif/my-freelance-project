@@ -22,6 +22,9 @@ const Navbar = () => {
     navigate("/my-profile");
     setOpen(false);
   };
+  const handleThemeToggle = () => {
+  document.body.classList.toggle("dark-mode");
+};
 
   return (
     <nav className="flex justify-between items-center mx-4 md:mx-10 py-4 relative">
@@ -83,6 +86,9 @@ const Navbar = () => {
       </ul>
 
       {/* Desktop Menu */}
+      <button onClick={handleThemeToggle} className="px-3 py-1 border rounded">
+       Toggle Theme
+       </button>
       <ul className="hidden md:flex gap-6 items-center">
         {navigationData.map((route) => (
           <li key={route.id}>

@@ -4,16 +4,25 @@ import toast from "react-hot-toast";
 
 const AllJobs = () => {
   const [jobs, setJobs] = useState([]);
+  const [sortOrder, setSortOrder] = useState("latest");
 
+  // Fetch Jobs
   useEffect(() => {
     fetch("http://localhost:3000/jobs")
       .then(res => res.json())
       .then(data => setJobs(data));
   }, []);
 
+  // Sorting logic
+  const sortedJobs = [...jobs].sort((a, b) => {
+    const dateA = new Date(a.postedAt);
+    const dateB = new Date(b.postedAt);
+    return sortOrder === "latest" ? dateB - dateA : dateA - dateB;
+  });
+
   // Handle Delete
   const handleDelete = async (id) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this job?");
+    const confirmDelete = window.confirm("Are you sure?");
     if (!confirmDelete) return;
 
     try {
@@ -22,20 +31,29 @@ const AllJobs = () => {
       });
 
       if (res.ok) {
-        toast.success("Job deleted successfully!");
-        setJobs(jobs.filter(job => job._id !== id)); // Remove from UI instantly
-      } else {
-        toast.error("Failed to delete job");
+        toast.success("Job deleted!");
+        setJobs(jobs.filter(job => job._id !== id));
       }
-    } catch (error) {
-      console.log(error);
-      toast.error("Something went wrong!");
+    } catch (err) {
+      toast.error("Error deleting job");
     }
   };
 
   return (
     <div className="max-w-7xl mx-auto mt-10 px-4">
       <h2 className="text-2xl font-semibold mb-6 text-center">All Jobs</h2>
+
+      {/* Sorting Dropdown */}
+      <div className="flex justify-end mb-4">
+        <select
+          className="border px-3 py-2 rounded"
+          value={sortOrder}
+          onChange={(e) => setSortOrder(e.target.value)}
+        >
+          <option value="latest">Sort by Latest</option>
+          <option value="oldest">Sort by Oldest</option>
+        </select>
+      </div>
 
       <div className="overflow-x-auto shadow border rounded-lg">
         <table className="min-w-full bg-white text-left">
@@ -51,14 +69,10 @@ const AllJobs = () => {
           </thead>
 
           <tbody>
-            {jobs.map(job => (
+            {sortedJobs.map(job => (
               <tr key={job._id} className="border-b hover:bg-gray-50">
                 <td className="py-3 px-4">
-                  <img
-                    src={job.coverImage}
-                    alt="job"
-                    className="w-16 h-16 rounded object-cover border"
-                  />
+                  <img src={job.coverImage} className="w-16 h-16 object-cover rounded border" />
                 </td>
                 <td className="py-3 px-4 font-medium">{job.title}</td>
                 <td className="py-3 px-4">{job.category}</td>
@@ -83,15 +97,14 @@ const AllJobs = () => {
                 </td>
               </tr>
             ))}
-
+            
             {jobs.length === 0 && (
               <tr>
-                <td colSpan="6" className="text-center py-6">
-                  No jobs posted yet.
-                </td>
+                <td colSpan="6" className="text-center py-6">No jobs found.</td>
               </tr>
             )}
           </tbody>
+
         </table>
       </div>
     </div>
@@ -99,4 +112,5 @@ const AllJobs = () => {
 };
 
 export default AllJobs;
+
 
