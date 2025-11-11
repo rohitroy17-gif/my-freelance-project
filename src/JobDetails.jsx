@@ -2,15 +2,15 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { useNavigate } from "react-router";
 import { useAuthContext } from "./AuthProvider";
-import { toast } from "react-hot-toast";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const JobDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { user, loading } = useAuthContext(); // logged-in user
+  const { user, loading } = useAuthContext();
   const [job, setJob] = useState(null);
   const [jobLoading, setJobLoading] = useState(true);
-  const [accepting, setAccepting] = useState(false);
 
   // Redirect to login if not logged in
   useEffect(() => {
@@ -22,6 +22,8 @@ const JobDetails = () => {
   // Fetch job details
   useEffect(() => {
     const fetchJob = async () => {
+      if (!user) return;
+
       try {
         setJobLoading(true);
         const res = await fetch(`http://localhost:3000/jobs/${id}`);
@@ -35,74 +37,64 @@ const JobDetails = () => {
         setJobLoading(false);
       }
     };
-    if (user) fetchJob(); // fetch only if user exists
+
+    fetchJob();
   }, [id, user]);
 
   // Accept Job
   const handleAccept = async () => {
-    if (!user) return toast.error("Login required");
+    if (!user) return toast.error("You must be logged in");
+
     try {
-      setAccepting(true);
-
-      const res = await fetch(`http://localhost:3000/jobs/${id}`, {
-        method: "PATCH",
+      const res = await fetch(`http://localhost:3000/jobs/accept/${id}`, {
+        method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ acceptedBy: user.email }),
+        body: JSON.stringify({ userEmail: user.email }),
       });
-
-      if (!res.ok) throw new Error("Failed to accept job");
-
-      // Update job state
-      setJob(prev => ({ ...prev, acceptedBy: user.email }));
-      toast.success("Job accepted!");
+      if (res.ok) {
+        toast.success("Job accepted successfully!");
+        setJob({ ...job, acceptedUsers: [...(job.acceptedUsers || []), user.email] });
+      } else {
+        toast.error("Failed to accept job");
+      }
     } catch (err) {
       console.error(err);
-      toast.error("Failed to accept job");
-    } finally {
-      setAccepting(false);
+      toast.error("Error accepting job");
     }
   };
 
   if (loading || jobLoading) return <p className="text-center mt-10">Loading...</p>;
-  if (!job) return <p className="text-center mt-10">Job not found.</p>;
+  if (!job) return <p className="text-center mt-10">Job not found</p>;
+
+  const alreadyAccepted = job.acceptedUsers?.includes(user.email);
 
   return (
-    <div className="max-w-4xl mx-auto mt-10 px-6 py-8 bg-white rounded-lg shadow-md">
-      <h1 className="text-4xl font-bold mb-4">{job.title}</h1>
-      <img
-        src={job.coverImage}
-        alt={job.title}
-        className="w-full h-72 object-cover rounded-lg mb-6 border"
-      />
-      <div className="space-y-3 text-gray-700">
-        <p><strong>Category:</strong> {job.category}</p>
-        <p><strong>Posted By:</strong> {job.postedBy}</p>
-        <p><strong>Summary:</strong> {job.summary}</p>
-        <p><strong>Accepted By:</strong> {job.acceptedBy || "Not yet accepted"}</p>
-      </div>
+    <div className="max-w-4xl mx-auto mt-10 px-4">
+      <ToastContainer position="top-right" autoClose={1500} />
+      <h1 className="text-3xl font-bold mb-4">{job.title}</h1>
+      <img src={job.coverImage} alt={job.title} className="w-full h-64 object-cover rounded-lg mb-6 border" />
+      <p><strong>Category:</strong> {job.category}</p>
+      <p><strong>Posted By:</strong> {job.postedBy}</p>
+      <p><strong>Summary:</strong> {job.summary}</p>
+      <p><strong>Accepted By:</strong> {job.acceptedUsers?.length || 0}</p>
 
-      {/* SHOW Accept button only if logged-in user hasn't accepted yet */}
-      {user && job.acceptedBy !== user.email && (
+      {!alreadyAccepted && (
         <button
           onClick={handleAccept}
-          disabled={accepting}
-          className="mt-6 px-6 py-3 bg-green-600 text-white rounded hover:bg-green-700"
+          className="mt-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
         >
-          {accepting ? "Accepting..." : "Accept Job"}
+          Accept Job
         </button>
       )}
-
-      {/* Inform user if already accepted */}
-      {user && job.acceptedBy === user.email && (
-        <span className="mt-6 px-4 py-2 bg-gray-300 rounded text-white inline-block">
-          You have accepted this job ✅
-        </span>
+      {alreadyAccepted && (
+        <p className="mt-4 font-semibold text-green-600">You have accepted this job</p>
       )}
     </div>
   );
 };
 
 export default JobDetails;
+
 
 
 

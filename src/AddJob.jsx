@@ -1,22 +1,18 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import React, { useState } from "react";
+import { useNavigate } from "react-router";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useAuthContext } from "./AuthProvider";
 
 const AddJob = () => {
   const navigate = useNavigate();
-
-  // Simulated logged-in user (replace with actual auth later)
-  const user = {
-    displayName: "John Doe",
-    email: "john@example.com"
-  };
+  const { user } = useAuthContext();
 
   const [formData, setFormData] = useState({
-    title: '',
-    category: '',
-    summary: '',
-    coverImage: ''
+    title: "",
+    category: "",
+    summary: "",
+    coverImage: ""
   });
 
   const categories = [
@@ -34,6 +30,7 @@ const AddJob = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!user) return toast.error("You must be logged in to add a job");
 
     const jobData = {
       ...formData,
@@ -50,14 +47,11 @@ const AddJob = () => {
       });
 
       if (res.ok) {
-        toast.success("Job Added Successfully!");
-
-        setFormData({ title: '', category: '', summary: '', coverImage: '' });
-
-        // Redirect to /all-jobs (correct path)
+        toast.success("Job added successfully!");
+        setFormData({ title: "", category: "", summary: "", coverImage: "" });
         setTimeout(() => navigate("/all-jobs"), 1500);
       } else {
-        toast.error("Failed to add job.");
+        toast.error("Failed to add job");
       }
     } catch (err) {
       toast.error("Something went wrong!");
@@ -66,69 +60,50 @@ const AddJob = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow">
+    <div className="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow mt-10">
       <ToastContainer position="top-right" autoClose={1500} />
-
       <h1 className="text-2xl font-bold mb-4">Add New Job</h1>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-
-        <div>
-          <label className="block font-semibold mb-1">Title</label>
-          <input
-            type="text"
-            name="title"
-            value={formData.title}
-            onChange={handleChange}
-            required
-            className="w-full border rounded px-3 py-2"
-          />
-        </div>
-
-        <div>
-          <label className="block font-semibold mb-1">Category</label>
-          <select
-            name="category"
-            value={formData.category}
-            onChange={handleChange}
-            required
-            className="w-full border rounded px-3 py-2"
-          >
-            <option value="">Select a category</option>
-            {categories.map((cat) => (
-              <option key={cat} value={cat}>{cat}</option>
-            ))}
-          </select>
-        </div>
-
-        <div>
-          <label className="block font-semibold mb-1">Summary</label>
-          <textarea
-            name="summary"
-            value={formData.summary}
-            onChange={handleChange}
-            required
-            className="w-full border rounded px-3 py-2 h-32"
-          />
-        </div>
-
-        <div>
-          <label className="block font-semibold mb-1">Cover Image URL</label>
-          <input
-            type="text"
-            name="coverImage"
-            value={formData.coverImage}
-            onChange={handleChange}
-            required
-            placeholder="https://example.com/image.jpg"
-            className="w-full border rounded px-3 py-2"
-          />
-        </div>
-
-        <button
-          type="submit"
-          className="bg-purple-600 text-white px-6 py-2 rounded hover:bg-purple-700"
+        <input
+          type="text"
+          name="title"
+          value={formData.title}
+          onChange={handleChange}
+          placeholder="Job Title"
+          className="w-full border px-3 py-2 rounded"
+          required
+        />
+        <select
+          name="category"
+          value={formData.category}
+          onChange={handleChange}
+          className="w-full border px-3 py-2 rounded"
+          required
         >
+          <option value="">Select category</option>
+          {categories.map((cat) => (
+            <option key={cat} value={cat}>{cat}</option>
+          ))}
+        </select>
+        <textarea
+          name="summary"
+          value={formData.summary}
+          onChange={handleChange}
+          placeholder="Job Summary"
+          className="w-full border px-3 py-2 rounded h-32"
+          required
+        />
+        <input
+          type="text"
+          name="coverImage"
+          value={formData.coverImage}
+          onChange={handleChange}
+          placeholder="Cover Image URL"
+          className="w-full border px-3 py-2 rounded"
+          required
+        />
+        <button className="bg-purple-600 text-white px-6 py-2 rounded hover:bg-purple-700">
           Add Job
         </button>
       </form>
@@ -137,5 +112,6 @@ const AddJob = () => {
 };
 
 export default AddJob;
+
 
 
