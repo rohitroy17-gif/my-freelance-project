@@ -1,0 +1,45 @@
+# Freelance Marketplace Platform
+
+**Live Site:** https://brilliant-empanada-e38601.netlify.app/  
+**Backend API:** https://freelance-server-six.vercel.app/
+A responsive freelance marketplace web application where users can post jobs, browse available work, and accept tasks from others. The platform supports secure authentication, real-time job updates, and personal task management features.
+
+---
+
+## Features
+
+- **User Authentication:** Secure login and registration using Firebase Authentication (Email/Password & Google Sign-In).
+- **Add and Manage Jobs:** Users can post new jobs with details like title, category, image, summary, and posted user info.
+- **Browse All Jobs:** View all jobs posted by different users, with advanced sorting based on the latest posted date/time.
+- **Accept Tasks:** Users can accept jobs posted by others (but cannot accept their own posted jobs).
+- **My Accepted Tasks:** Users can see all the jobs they have accepted in a dedicated dashboard.
+- **Responsive UI:** Fully mobile-friendly navigation with profile and logout dropdown visible across screen sizes.
+- **Dark/Light Theme Toggle:** Users can switch between dark and light themes for better user experience.
+- **Secured Backend:** All API routes are protected using Firebase Admin SDK token verification and MongoDB Atlas.
+
+---
+
+## Technologies Used
+
+**Frontend:**
+- React.js
+- React Router
+- Firebase Authentication
+- Tailwind CSS
+- React Hot Toast / React Toastify
+
+**Backend:**
+- Node.js
+- Express.js
+- MongoDB Atlas
+- Firebase Admin SDK
+- JSON Web Tokens (JWT) (optional enhancement)
+
+---
+
+## How to Run Locally
+
+### 1. Clone the repository
+```bash
+git clone https://github.com/rohitroy17-gif/my-freelance-project
+cd my-freelance-project
