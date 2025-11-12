@@ -49,13 +49,14 @@ export const AuthProvider = ({ children }) => {
 
   // ✅ Modified Google Login: Popup for desktop, Redirect for mobile
   const googleLogin = () => {
-    if (window.innerWidth < 768) {
-      // Mobile Device → Redirect Login
-      return signInWithRedirect(auth, googleProvider);
-    } else {
-      // Desktop → Popup Login
-      return signInWithPopup(auth, googleProvider);
-    }
+     return signInWithPopup(auth, googleProvider);
+    // if (window.innerWidth < 768) {
+    //   // Mobile Device → Redirect Login
+    //   return signInWithRedirect(auth, googleProvider);
+    // } else {
+    //   // Desktop → Popup Login
+    //   return signInWithPopup(auth, googleProvider);
+    // }
   };
 
   const updateUserProfile = (name, photoURL) => {
