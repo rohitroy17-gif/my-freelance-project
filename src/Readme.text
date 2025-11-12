@@ -1,6 +1,6 @@
 # Freelance Marketplace Platform
 
-**Live Site:** https://brilliant-empanada-e38601.netlify.app/  
+**Live Site:**https://splendid-basbousa-0c89cc.netlify.app/  
 **Backend API:** https://freelance-server-six.vercel.app/
 A responsive freelance marketplace web application where users can post jobs, browse available work, and accept tasks from others. The platform supports secure authentication, real-time job updates, and personal task management features.
 
@@ -42,4 +42,4 @@ A responsive freelance marketplace web application where users can post jobs, br
 ### 1. Clone the repository
 ```bash
 git clone https://github.com/rohitroy17-gif/my-freelance-project
-cd my-freelance-project
+dd my-freelance-project
